@@ -1,0 +1,8 @@
+$('.destroy_phone').on('ajax:success', function (e) {
+  // debugger;
+  $(this).parent().parent()[0].remove()
+
+  // $("<%= escape_javascript(render @phone) %>").appendTo('.all_phone');
+  // $(this).trigger("reset");
+
+})

@@ -1,0 +1,75 @@
+<tr>
+  <td><%= phone.phone_number %></td>
+  <td><%= phone.name %></td>
+  <td><%= link_to 'Edit', edit_phone_path(phone), class: 'edit_phone', 'data-id': phone.id %></td>
+  <div class="d-none">
+    <%#= render partial: 'form', locals: {phone: phone} %>
+  </div>
+  <td><%= link_to 'Destroy', phone, method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'destroy_phone' %></td>
+</tr>
+
+
+
+<script type="text/javascript">
+
+  $('.edit_phone').on('click', function(e) {
+    // debugger;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    // $(this.parent().find('.d-none').removeClass('d-none');
+    // $(this).hide();
+    $form = $('.phone_form');
+    fields = $(this).parent().siblings();
+    value = $(fields[0]).text();
+    // debugger;
+    html = '<td> <input type="text" name="phone[phone_number]" value= "'+value+'"></td>'
+    $(fields[0]).html(html)
+
+    value = $(fields[1]).text();
+    // debugger;
+    html = '<td> <input type="text" name="phone[name]" value= "'+value+'"></td>'
+    $(fields[1]).html(html)
+
+    html = '<td> <button name="button" type="cancel" class="cancel_phone">Cancel</button></td>'
+    $(fields[2]).html(html)
+    id = $(this).attr('data-id')
+    html = '<td> <input type="button" name="commit" value="Update" class="update_phone" id="update_btn_'+id+'" onclick= update_button('+id+')></td>'
+    $(this).parent().html(html)
+    // r = "<%= escape_javascript(render partial: 'form', locals: { phone: phone } ) %>";
+    // debugger;
+    // $(this).parent().parent().replaceWith("<%= escape_javascript(render partial: 'form', locals: { phone: phone } ) %>");
+
+    // e.stopPropagation();
+    // alert();
+  })
+
+  function update_button (id) {
+    // e.preventDefault();
+    // e.stopPropagation();
+    $this = $('#update_btn_'+id)
+    fields = $this.parent().parent().siblings().find('input')
+    phone_number = $(fields[0]).val()
+    // debugger;
+    name = $(fields[1]).val()
+    $.ajax({
+      url: 'phones/'+id,
+      data: {
+        phone_number,
+        name,
+      },
+      type: 'put',
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(response) {
+        // debugger;
+        $this.parent().parent().parent().replaceWith(response);
+        // $this.trigger('reset');
+      },
+      error: function(error) {
+        alert('an error occured')
+      }
+    })
+  }
+
+</script>
